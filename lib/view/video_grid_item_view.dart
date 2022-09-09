@@ -25,17 +25,7 @@ class VideoGridItemView extends StatefulWidget {
 class _VideoGridItemViewState extends State<VideoGridItemView> {
   double radius = 4;
 
-  ///友好数字显示
-  String getFriendNum(int? num) {
-    if (num == null) {
-      return "0";
-    }
-    if (num < 10000) {
-      return "$num";
-    }
-    //保留1位小数
-    return "${(num / 10000).toStringAsFixed(1)}w";
-  }
+
 
   ///播放量，评论量，时长 文字样式
   TextStyle getStatTextStyle() {
@@ -76,7 +66,7 @@ class _VideoGridItemViewState extends State<VideoGridItemView> {
                   padding: const EdgeInsets.only(
                       left: 4, right: 4, top: 2, bottom: 2),
                   child: Text(
-                    "${getFriendNum(widget.videoList.stat?.like)}点赞",
+                    "${StringUtils.getFriendNum(widget.videoList.stat?.like)}点赞",
                     style: const TextStyle(fontSize: 10, color: Colors.pink),
                   ),
                 ),
@@ -107,7 +97,7 @@ class _VideoGridItemViewState extends State<VideoGridItemView> {
                   Padding(
                       padding: const EdgeInsets.only(left: 4),
                       child: Text(
-                        getFriendNum(widget.videoList.stat?.view),
+                        StringUtils.getFriendNum(widget.videoList.stat?.view),
                         style: getStatTextStyle(),
                       ))
                 ],
@@ -125,7 +115,7 @@ class _VideoGridItemViewState extends State<VideoGridItemView> {
                     ),
                     Padding(
                         padding: const EdgeInsets.only(left: 4),
-                        child: Text(getFriendNum(widget.videoList.stat?.reply),
+                        child: Text(StringUtils.getFriendNum(widget.videoList.stat?.reply),
                             style: getStatTextStyle()))
                   ],
                 ),

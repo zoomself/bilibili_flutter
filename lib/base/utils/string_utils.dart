@@ -44,4 +44,17 @@ class StringUtils{
       return "$s_m:$s_s";
     }
   }
+
+
+  ///友好数字显示
+  static String getFriendNum(int? num) {
+    if (num == null) {
+      return "0";
+    }
+    if (num < 10000) {
+      return "$num";
+    }
+    //保留1位小数
+    return "${(num / 10000).toStringAsFixed(1)}w";
+  }
 }

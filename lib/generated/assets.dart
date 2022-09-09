@@ -2,10 +2,14 @@
 class Assets {
   Assets._();
 
-  static const String imagesIcBilibili = 'assets/images/ic_bilibili.png';
+  static const String imagesIcB = 'assets/images/ic_b.png';
+  static const String imagesIcCollect = 'assets/images/ic_collect.png';
   static const String imagesIcCommentCount = 'assets/images/ic_comment_count.png';
+  static const String imagesIcDisLike = 'assets/images/ic_dis_like.png';
   static const String imagesIcHot = 'assets/images/ic_hot.png';
+  static const String imagesIcLike = 'assets/images/ic_like.png';
   static const String imagesIcPlayCount = 'assets/images/ic_play_count.png';
   static const String imagesIcRanking = 'assets/images/ic_ranking.png';
+  static const String imagesIcShare = 'assets/images/ic_share.png';
 
 }

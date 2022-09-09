@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:bilibili_flutter/model/region_entity.dart';
 import 'package:bilibili_flutter/model/test_entity.dart';
+import 'package:bilibili_flutter/model/video_detail_entity.dart';
 import 'package:bilibili_flutter/model/video_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
@@ -16,6 +17,45 @@ class JsonConvert {
 		(RegionEntity).toString(): RegionEntity.fromJson,
 		(RegionRegionCount).toString(): RegionRegionCount.fromJson,
 		(TestEntity).toString(): TestEntity.fromJson,
+		(VideoDetailEntity).toString(): VideoDetailEntity.fromJson,
+		(VideoDetailCard).toString(): VideoDetailCard.fromJson,
+		(VideoDetailCardCard).toString(): VideoDetailCardCard.fromJson,
+		(VideoDetailCardCardOfficial).toString(): VideoDetailCardCardOfficial.fromJson,
+		(VideoDetailCardCardLevelInfo).toString(): VideoDetailCardCardLevelInfo.fromJson,
+		(VideoDetailCardCardNameplate).toString(): VideoDetailCardCardNameplate.fromJson,
+		(VideoDetailCardCardOfficialVerify).toString(): VideoDetailCardCardOfficialVerify.fromJson,
+		(VideoDetailCardCardPendant).toString(): VideoDetailCardCardPendant.fromJson,
+		(VideoDetailCardCardVip).toString(): VideoDetailCardCardVip.fromJson,
+		(VideoDetailCardCardVipLabel).toString(): VideoDetailCardCardVipLabel.fromJson,
+		(VideoDetailCardSpace).toString(): VideoDetailCardSpace.fromJson,
+		(VideoDetailRelated).toString(): VideoDetailRelated.fromJson,
+		(VideoDetailRelatedDimension).toString(): VideoDetailRelatedDimension.fromJson,
+		(VideoDetailRelatedOwner).toString(): VideoDetailRelatedOwner.fromJson,
+		(VideoDetailRelatedRights).toString(): VideoDetailRelatedRights.fromJson,
+		(VideoDetailRelatedStat).toString(): VideoDetailRelatedStat.fromJson,
+		(VideoDetailReply).toString(): VideoDetailReply.fromJson,
+		(VideoDetailReplyPage).toString(): VideoDetailReplyPage.fromJson,
+		(VideoDetailReplyReplies).toString(): VideoDetailReplyReplies.fromJson,
+		(VideoDetailReplyRepliesContent).toString(): VideoDetailReplyRepliesContent.fromJson,
+		(VideoDetailTags).toString(): VideoDetailTags.fromJson,
+		(VideoDetailTagsCount).toString(): VideoDetailTagsCount.fromJson,
+		(VideoDetailView).toString(): VideoDetailView.fromJson,
+		(VideoDetailViewDescV2).toString(): VideoDetailViewDescV2.fromJson,
+		(VideoDetailViewDimension).toString(): VideoDetailViewDimension.fromJson,
+		(VideoDetailViewHonorReply).toString(): VideoDetailViewHonorReply.fromJson,
+		(VideoDetailViewHonorReplyHonor).toString(): VideoDetailViewHonorReplyHonor.fromJson,
+		(VideoDetailViewLabel).toString(): VideoDetailViewLabel.fromJson,
+		(VideoDetailViewOwner).toString(): VideoDetailViewOwner.fromJson,
+		(VideoDetailViewPages).toString(): VideoDetailViewPages.fromJson,
+		(VideoDetailViewPagesDimension).toString(): VideoDetailViewPagesDimension.fromJson,
+		(VideoDetailViewRights).toString(): VideoDetailViewRights.fromJson,
+		(VideoDetailViewStat).toString(): VideoDetailViewStat.fromJson,
+		(VideoDetailViewSubtitle).toString(): VideoDetailViewSubtitle.fromJson,
+		(VideoDetailViewSubtitleList).toString(): VideoDetailViewSubtitleList.fromJson,
+		(VideoDetailViewSubtitleListAuthor).toString(): VideoDetailViewSubtitleListAuthor.fromJson,
+		(VideoDetailViewUserGarb).toString(): VideoDetailViewUserGarb.fromJson,
+		(VideoDetailHotShare).toString(): VideoDetailHotShare.fromJson,
+		(VideoDetailViewAddit).toString(): VideoDetailViewAddit.fromJson,
 		(VideoEntity).toString(): VideoEntity.fromJson,
 		(VideoList).toString(): VideoList.fromJson,
 		(VideoListDimension).toString(): VideoListDimension.fromJson,
@@ -105,6 +145,123 @@ class JsonConvert {
 		}
 		if(<TestEntity>[] is M){
 			return data.map<TestEntity>((Map<String, dynamic> e) => TestEntity.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailEntity>[] is M){
+			return data.map<VideoDetailEntity>((Map<String, dynamic> e) => VideoDetailEntity.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCard>[] is M){
+			return data.map<VideoDetailCard>((Map<String, dynamic> e) => VideoDetailCard.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCard>[] is M){
+			return data.map<VideoDetailCardCard>((Map<String, dynamic> e) => VideoDetailCardCard.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardOfficial>[] is M){
+			return data.map<VideoDetailCardCardOfficial>((Map<String, dynamic> e) => VideoDetailCardCardOfficial.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardLevelInfo>[] is M){
+			return data.map<VideoDetailCardCardLevelInfo>((Map<String, dynamic> e) => VideoDetailCardCardLevelInfo.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardNameplate>[] is M){
+			return data.map<VideoDetailCardCardNameplate>((Map<String, dynamic> e) => VideoDetailCardCardNameplate.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardOfficialVerify>[] is M){
+			return data.map<VideoDetailCardCardOfficialVerify>((Map<String, dynamic> e) => VideoDetailCardCardOfficialVerify.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardPendant>[] is M){
+			return data.map<VideoDetailCardCardPendant>((Map<String, dynamic> e) => VideoDetailCardCardPendant.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardVip>[] is M){
+			return data.map<VideoDetailCardCardVip>((Map<String, dynamic> e) => VideoDetailCardCardVip.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardCardVipLabel>[] is M){
+			return data.map<VideoDetailCardCardVipLabel>((Map<String, dynamic> e) => VideoDetailCardCardVipLabel.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailCardSpace>[] is M){
+			return data.map<VideoDetailCardSpace>((Map<String, dynamic> e) => VideoDetailCardSpace.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailRelated>[] is M){
+			return data.map<VideoDetailRelated>((Map<String, dynamic> e) => VideoDetailRelated.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailRelatedDimension>[] is M){
+			return data.map<VideoDetailRelatedDimension>((Map<String, dynamic> e) => VideoDetailRelatedDimension.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailRelatedOwner>[] is M){
+			return data.map<VideoDetailRelatedOwner>((Map<String, dynamic> e) => VideoDetailRelatedOwner.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailRelatedRights>[] is M){
+			return data.map<VideoDetailRelatedRights>((Map<String, dynamic> e) => VideoDetailRelatedRights.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailRelatedStat>[] is M){
+			return data.map<VideoDetailRelatedStat>((Map<String, dynamic> e) => VideoDetailRelatedStat.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailReply>[] is M){
+			return data.map<VideoDetailReply>((Map<String, dynamic> e) => VideoDetailReply.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailReplyPage>[] is M){
+			return data.map<VideoDetailReplyPage>((Map<String, dynamic> e) => VideoDetailReplyPage.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailReplyReplies>[] is M){
+			return data.map<VideoDetailReplyReplies>((Map<String, dynamic> e) => VideoDetailReplyReplies.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailReplyRepliesContent>[] is M){
+			return data.map<VideoDetailReplyRepliesContent>((Map<String, dynamic> e) => VideoDetailReplyRepliesContent.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailTags>[] is M){
+			return data.map<VideoDetailTags>((Map<String, dynamic> e) => VideoDetailTags.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailTagsCount>[] is M){
+			return data.map<VideoDetailTagsCount>((Map<String, dynamic> e) => VideoDetailTagsCount.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailView>[] is M){
+			return data.map<VideoDetailView>((Map<String, dynamic> e) => VideoDetailView.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewDescV2>[] is M){
+			return data.map<VideoDetailViewDescV2>((Map<String, dynamic> e) => VideoDetailViewDescV2.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewDimension>[] is M){
+			return data.map<VideoDetailViewDimension>((Map<String, dynamic> e) => VideoDetailViewDimension.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewHonorReply>[] is M){
+			return data.map<VideoDetailViewHonorReply>((Map<String, dynamic> e) => VideoDetailViewHonorReply.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewHonorReplyHonor>[] is M){
+			return data.map<VideoDetailViewHonorReplyHonor>((Map<String, dynamic> e) => VideoDetailViewHonorReplyHonor.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewLabel>[] is M){
+			return data.map<VideoDetailViewLabel>((Map<String, dynamic> e) => VideoDetailViewLabel.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewOwner>[] is M){
+			return data.map<VideoDetailViewOwner>((Map<String, dynamic> e) => VideoDetailViewOwner.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewPages>[] is M){
+			return data.map<VideoDetailViewPages>((Map<String, dynamic> e) => VideoDetailViewPages.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewPagesDimension>[] is M){
+			return data.map<VideoDetailViewPagesDimension>((Map<String, dynamic> e) => VideoDetailViewPagesDimension.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewRights>[] is M){
+			return data.map<VideoDetailViewRights>((Map<String, dynamic> e) => VideoDetailViewRights.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewStat>[] is M){
+			return data.map<VideoDetailViewStat>((Map<String, dynamic> e) => VideoDetailViewStat.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewSubtitle>[] is M){
+			return data.map<VideoDetailViewSubtitle>((Map<String, dynamic> e) => VideoDetailViewSubtitle.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewSubtitleList>[] is M){
+			return data.map<VideoDetailViewSubtitleList>((Map<String, dynamic> e) => VideoDetailViewSubtitleList.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewSubtitleListAuthor>[] is M){
+			return data.map<VideoDetailViewSubtitleListAuthor>((Map<String, dynamic> e) => VideoDetailViewSubtitleListAuthor.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewUserGarb>[] is M){
+			return data.map<VideoDetailViewUserGarb>((Map<String, dynamic> e) => VideoDetailViewUserGarb.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailHotShare>[] is M){
+			return data.map<VideoDetailHotShare>((Map<String, dynamic> e) => VideoDetailHotShare.fromJson(e)).toList() as M;
+		}
+		if(<VideoDetailViewAddit>[] is M){
+			return data.map<VideoDetailViewAddit>((Map<String, dynamic> e) => VideoDetailViewAddit.fromJson(e)).toList() as M;
 		}
 		if(<VideoEntity>[] is M){
 			return data.map<VideoEntity>((Map<String, dynamic> e) => VideoEntity.fromJson(e)).toList() as M;

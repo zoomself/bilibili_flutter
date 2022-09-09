@@ -36,6 +36,7 @@ class _RankPageState extends State<RankPage> with TickerProviderStateMixin,Autom
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
         length: RegionConstants.regionList.length,
         child: Scaffold(

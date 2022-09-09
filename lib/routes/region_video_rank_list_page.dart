@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bilibili_flutter/base/utils/screen_utils.dart';
 import 'package:bilibili_flutter/routes/video_detail_page.dart';
 import 'package:bilibili_flutter/view/video_list_item_page.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import '../base/net/net_client.dart';
 import '../model/video_entity.dart';
@@ -89,7 +88,7 @@ class _RegionVideoRankListPageState extends State<RegionVideoRankListPage>
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return VideoDetailPage(
-                  videoList: _dataList[index],
+                  aid: _dataList[index].aid!,
                 );
               }));
             },
@@ -108,7 +107,7 @@ class _RegionVideoRankListPageState extends State<RegionVideoRankListPage>
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return VideoDetailPage(
-                  videoList: _dataList[index],
+                  aid: _dataList[index].aid!,
                 );
               }));
             });

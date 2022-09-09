@@ -38,13 +38,11 @@ class _VideoListItemViewState extends State<VideoListItemView> {
   ///list 模式下图片宽度
   double getImageWidth(){
     double width=ScreenUtils.getScreenWidth()*0.45;
-    LogUtils.log("width:$width");
     return width;
   }
   ///list 模式下图片高度
   double getImageHeight(){
     double height=getImageWidth()/_imageAspect;
-    LogUtils.log("height:$height");
     return height;
   }
 
@@ -187,7 +185,7 @@ class _VideoListItemViewState extends State<VideoListItemView> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.only(left: 4, right: 4, top: 8, bottom: 8),
+      padding: const EdgeInsets.only( top: 8, bottom: 8),
       // child: Text("${widget.videoList.title}"),
       child: Row(
         // children: [getImageView(), getTitleView()],
