@@ -24,8 +24,8 @@ class CustomSliverPersistentHeaderDelegate
   @override
   bool shouldRebuild(
       covariant CustomSliverPersistentHeaderDelegate oldDelegate) {
-    return child == oldDelegate.child &&
-        maxHeight == oldDelegate.maxHeight &&
-        minHeight == oldDelegate.minHeight;
+    return child != oldDelegate.child &&
+        maxHeight != oldDelegate.maxHeight &&
+        minHeight != oldDelegate.minHeight;
   }
 }

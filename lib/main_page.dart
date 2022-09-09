@@ -2,7 +2,6 @@ import 'package:bilibili_flutter/generated/assets.dart';
 import 'package:bilibili_flutter/routes/hot_page.dart';
 import 'package:bilibili_flutter/routes/rank_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);

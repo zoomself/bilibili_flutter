@@ -15,19 +15,20 @@ class VideoDetailPage extends StatefulWidget {
 }
 
 class _VideoDetailPageState extends State<VideoDetailPage> {
-
-
   ///顶部视频 appBar
   Widget getTopVideoAppbar() {
     return SliverAppBar(
-      floating: true,
-      snap: true,
+      floating: false,
+      snap: false,
       pinned: true,
       centerTitle: true,
       title: getTitle(),
       elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light),
       flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const <StretchMode>[StretchMode.zoomBackground,StretchMode.fadeTitle,StretchMode.blurBackground,],
+        //stretchModes: const <StretchMode>[StretchMode.zoomBackground,StretchMode.fadeTitle,StretchMode.blurBackground,],
         background: Image.network(
           widget.videoList.pic!,
           fit: BoxFit.cover,
@@ -40,33 +41,36 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   ///详情，简介
   Widget getTabView() {
     return SliverPersistentHeader(
-      delegate:CustomSliverPersistentHeaderDelegate(40, 40, Container(
-        width: double.infinity,
-        height: 40,
-        color: Colors.white,
-        child: Row(
-          children: [
-            const TabBar(
-              isScrollable: true,
-              padding: EdgeInsets.only(left: 30),
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorWeight: 2,
-              labelColor: Colors.pink,
-              unselectedLabelColor: Colors.black,
-              tabs: [
-                Tab(
-                  child: Text(
-                    "简介",
-                    style: TextStyle(fontSize: 12),
-                  ),
+      delegate: CustomSliverPersistentHeaderDelegate(
+          40,
+          40,
+          Container(
+            width: double.infinity,
+            height: 40,
+            color: Colors.white,
+            child: Row(
+              children: [
+                const TabBar(
+                  isScrollable: true,
+                  padding: EdgeInsets.only(left: 30),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorWeight: 2,
+                  labelColor: Colors.pink,
+                  unselectedLabelColor: Colors.black,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        "简介",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    Tab(
+                      child: Text("评论", style: TextStyle(fontSize: 12)),
+                    )
+                  ],
                 ),
-                Tab(
-                  child: Text("评论", style: TextStyle(fontSize: 12)),
-                )
-              ],
-            ),
-            Expanded(
-                child: Container(
+                Expanded(
+                    child: Container(
                   margin: const EdgeInsets.only(right: 16),
                   child: Align(
                     alignment: AlignmentDirectional.centerEnd,
@@ -79,24 +83,25 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                             left: 12, right: 12, top: 4, bottom: 4),
                         child: Text(
                           "点我发弹幕",
-                          style: TextStyle(color: Colors.grey[800], fontSize: 12),
+                          style:
+                              TextStyle(color: Colors.grey[800], fontSize: 12),
                         ),
                       ),
                     ),
                   ),
                 )),
-          ],
-        ),
-      )),
+              ],
+            ),
+          )),
       pinned: true,
     );
   }
 
-  Widget getTitle(){
+  Widget getTitle() {
     //bool show=_scrollController.offset > 200 - kToolbarHeight;
-    bool show=false;
-    String text=show?"立即播放":"";
-    return  Text(
+    bool show = false;
+    String text = show ? "立即播放" : "";
+    return Text(
       text,
       style: const TextStyle(
           color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
@@ -106,7 +111,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -116,23 +120,38 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    return DefaultTabController(
+    return Scaffold(
+      body: DefaultTabController(
         length: 2,
-        child: Scaffold(
-            body: CustomScrollView(
-              //controller: _scrollController,
-          slivers: [
-            getTopVideoAppbar(),
-            getTabView(),
-             SliverFillRemaining(
-                child: TabBarView(
-              children: [
-                VideoDetailSimpleIntroPage(),
-                VideoDetailSimpleIntroPage(),
-              ],
-            )),
-          ],
-        )));
+        child: NestedScrollView(
+          body: const TabBarView(
+            children: [
+              VideoDetailSimpleIntroPage(),
+              VideoDetailSimpleIntroPage(),
+            ],
+          ),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              getTopVideoAppbar(),
+              getTabView(),
+            ];
+          },
+        ),
+        /*child: CustomScrollView(
+        slivers: [
+          getTopVideoAppbar(),
+          getTabView(),
+          const SliverFillRemaining(
+              hasScrollBody: true,
+              child: TabBarView(
+                children: [
+                  VideoDetailSimpleIntroPage(),
+                  VideoDetailSimpleIntroPage(),
+                ],
+              )),
+        ],
+      ),*/
+      ),
+    );
   }
 }

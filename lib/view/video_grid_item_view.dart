@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:bilibili_flutter/base/utils/image_utils.dart';
 import 'package:bilibili_flutter/base/utils/string_utils.dart';
 import 'package:bilibili_flutter/generated/assets.dart';
 import 'package:flutter/material.dart';
 import '../model/video_entity.dart';
 
+///grid列表形式
 class VideoGridItemView extends StatefulWidget {
   final VideoList videoList;
 
@@ -43,7 +45,7 @@ class _VideoGridItemViewState extends State<VideoGridItemView> {
 
   ///标题，点赞
   Widget getTitleView() {
-    double height=min(widget.itemHeight * 0.5, 80);
+    double height = min(widget.itemHeight * 0.5, 80);
     return Container(
       height: height,
       width: double.infinity,
@@ -148,12 +150,10 @@ class _VideoGridItemViewState extends State<VideoGridItemView> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(radius),
               topRight: Radius.circular(radius)),
-          child: Image.network(
-            widget.videoList.pic!,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
+          child: ImageUtils.load(widget.videoList.pic!,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity),
         ),
         getStatView()
       ],

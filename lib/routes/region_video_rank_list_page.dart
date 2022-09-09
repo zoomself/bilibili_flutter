@@ -1,12 +1,10 @@
 import 'dart:math';
 
-import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/base/utils/screen_utils.dart';
 import 'package:bilibili_flutter/routes/video_detail_page.dart';
+import 'package:bilibili_flutter/view/video_list_item_page.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../base/net/net_client.dart';
 import '../model/video_entity.dart';
 import '../view/video_grid_item_view.dart';
@@ -23,24 +21,25 @@ class RegionVideoRankListPage extends StatefulWidget {
       _RegionVideoRankListPageState();
 }
 
-class _RegionVideoRankListPageState extends State<RegionVideoRankListPage> {
+class _RegionVideoRankListPageState extends State<RegionVideoRankListPage>
+    with AutomaticKeepAliveClientMixin {
   double crossAxisSpacing = 8;
-  double maxCrossAxisExtent = 300;  //最大宽度
+  double maxCrossAxisExtent = 300; //最大宽度
   int minCrossAxisCount = 2;
-  double childAspectRatio = 1.0;    //宽高比
+  double childAspectRatio = 1.0; //宽高比
 
-  double getItemHeight() {
-    double screenWidth=ScreenUtils.getScreenWidth();
-    int count=max(minCrossAxisCount,(screenWidth/maxCrossAxisExtent).ceil());
-    double itemWidth= (screenWidth -
-            (count + 1) * crossAxisSpacing) /
-        count;
-    double itemHeight=itemWidth/childAspectRatio;
+
+  ///grid 模式每个item的高度
+  double getGridItemHeight() {
+    double screenWidth = ScreenUtils.getScreenWidth();
+    int count =
+        max(minCrossAxisCount, (screenWidth / maxCrossAxisExtent).ceil());
+    double itemWidth = (screenWidth - (count + 1) * crossAxisSpacing) / count;
+    double itemHeight = itemWidth / childAspectRatio;
     return itemHeight;
   }
 
 
-  late EasyRefreshController _refreshController;
   final List<VideoList> _dataList = [];
 
   ///获取区域排行数据
@@ -55,51 +54,81 @@ class _RegionVideoRankListPageState extends State<RegionVideoRankListPage> {
             _dataList.clear();
             _dataList.addAll(list);
           }
-          _refreshController.finishRefresh();
         });
       }
     });
   }
 
-
   @override
   void initState() {
     super.initState();
-    _refreshController = EasyRefreshController(controlFinishRefresh: true);
     _getData();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _refreshController.dispose();
   }
-
 
   ///网格形式
   Widget getGridBody() {
     //WithMaxCrossAxisExtent这种方式更科学，可以无缝切换到横屏或者大屏上去
-    return GridView.builder(gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-      maxCrossAxisExtent: maxCrossAxisExtent,
-        crossAxisSpacing: crossAxisSpacing,
-        mainAxisSpacing: crossAxisSpacing,
-        childAspectRatio: childAspectRatio
-    ), itemBuilder: (context, index) {
-      return InkWell(child: VideoGridItemView(
-        videoList: _dataList[index],itemHeight: getItemHeight(),
-      ),onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder:(context){
-          return VideoDetailPage(videoList: _dataList[index],);
-        } ));
-      },);
-    });
+    return GridView.builder(
+        itemCount: _dataList.length,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: maxCrossAxisExtent,
+            crossAxisSpacing: crossAxisSpacing,
+            mainAxisSpacing: crossAxisSpacing,
+            childAspectRatio: childAspectRatio),
+        itemBuilder: (context, index) {
+          return InkWell(
+            child: VideoGridItemView(
+              videoList: _dataList[index],
+              itemHeight: getGridItemHeight(),
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return VideoDetailPage(
+                  videoList: _dataList[index],
+                );
+              }));
+            },
+          );
+        });
   }
 
+  Widget getListBody() {
+    return ListView.separated(
+      itemCount: _dataList.length,
+      itemBuilder: (context, index) {
+        return InkWell(
+            child: VideoListItemView(
+              videoList: _dataList[index]
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return VideoDetailPage(
+                  videoList: _dataList[index],
+                );
+              }));
+            });
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const Divider(
+          thickness: 0.5,
+          height: 0.5,
+        );
+      },
+    );
+  }
 
-  Widget getBody(){
-    if(_dataList.isEmpty){
+  Widget getBody() {
+    if (_dataList.isEmpty) {
       return const Center(
-        child: CircularProgressIndicator(color: Colors.pink,strokeWidth: 2,),
+        child: CircularProgressIndicator(
+          color: Colors.pink,
+          strokeWidth: 2,
+        ),
       );
     }
     return Container(
@@ -109,13 +138,15 @@ class _RegionVideoRankListPageState extends State<RegionVideoRankListPage> {
           right: crossAxisSpacing,
           top: crossAxisSpacing),
       child: getGridBody(),
+      //child: getListBody(),
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: getBody());
+    return Scaffold(body: getBody());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

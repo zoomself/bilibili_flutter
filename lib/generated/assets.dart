@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String imagesIcBilibili = 'assets/images/ic_bilibili.png';
   static const String imagesIcCommentCount = 'assets/images/ic_comment_count.png';
   static const String imagesIcHot = 'assets/images/ic_hot.png';
   static const String imagesIcPlayCount = 'assets/images/ic_play_count.png';

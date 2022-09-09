@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 
+///视频详情 --->简介
 class VideoDetailSimpleIntroPage extends StatefulWidget {
   const VideoDetailSimpleIntroPage({Key? key}) : super(key: key);
 
   @override
-  State<VideoDetailSimpleIntroPage> createState() => _VideoDetailSimpleIntroPageState();
+  State<VideoDetailSimpleIntroPage> createState() =>
+      _VideoDetailSimpleIntroPageState();
 }
 
-class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage> {
+class _VideoDetailSimpleIntroPageState
+    extends State<VideoDetailSimpleIntroPage> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemCount:10,itemBuilder: (a,b){
-      return Container(child: Text("text:$b"),height: 100,);
+    return ListView.builder(itemBuilder: (context,index){
+      return Container(
+        child: Text("text:$index"),
+        height: 100,
+      );
     });
-    return SliverFixedExtentList(delegate: SliverChildBuilderDelegate(
-        (a,b){
-          return Text("data:$b");
-        }
-    ), itemExtent: 100);
+
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
