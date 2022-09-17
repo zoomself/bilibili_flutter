@@ -143,6 +143,7 @@ class _RegionVideoRankListPageState extends State<RegionVideoRankListPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(body: getBody());
   }
 

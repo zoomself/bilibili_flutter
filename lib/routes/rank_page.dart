@@ -11,7 +11,7 @@ class RankPage extends StatefulWidget {
   State<RankPage> createState() => _RankPageState();
 }
 
-class _RankPageState extends State<RankPage> with TickerProviderStateMixin,AutomaticKeepAliveClientMixin {
+class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin {
   List<Widget> getTabs() {
     List<Widget> list = [];
     for (int region in RegionConstants.regionList) {
@@ -27,11 +27,6 @@ class _RankPageState extends State<RankPage> with TickerProviderStateMixin,Autom
       list.add(RegionVideoRankListPage(rid: region));
     }
     return list;
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
