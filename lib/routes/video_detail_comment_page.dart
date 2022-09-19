@@ -18,7 +18,7 @@ class VideoDetailCommentPage extends StatefulWidget {
   State<VideoDetailCommentPage> createState() => _VideoDetailCommentPageState();
 }
 
-class _VideoDetailCommentPageState extends State<VideoDetailCommentPage> {
+class _VideoDetailCommentPageState extends State<VideoDetailCommentPage> with AutomaticKeepAliveClientMixin{
   final int _pageSize=20;
   int _currentPage = 1;
   bool _canLoadMore = true;
@@ -34,6 +34,7 @@ class _VideoDetailCommentPageState extends State<VideoDetailCommentPage> {
   void _loadMore() {
     if (!_canLoadMore) {
       Fluttertoast.showToast(msg: "暂无更多数据");
+      _controller.finishLoad(IndicatorResult.noMore);
       return;
     }
     _currentPage++;
@@ -121,4 +122,7 @@ class _VideoDetailCommentPageState extends State<VideoDetailCommentPage> {
         },
         child: getListView());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

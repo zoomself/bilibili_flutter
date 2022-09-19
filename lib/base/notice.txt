@@ -1,0 +1,2 @@
+1:column 嵌套 listView gridView 需要设置 shrinkWrap: true,要不然显示白板
+2:

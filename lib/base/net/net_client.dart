@@ -104,7 +104,7 @@ class NetClient {
           dynamic  respMsg;
           for(String s in apiResultMsg){
             respMsg=data[s];
-            if(respCode!=null){
+            if(respMsg!=null){
               break;
             }
           }

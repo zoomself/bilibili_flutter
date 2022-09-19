@@ -4,15 +4,19 @@ class Assets {
 
   static const String imagesIcB = 'assets/images/ic_b.png';
   static const String imagesIcCollect = 'assets/images/ic_collect.png';
+  static const String imagesIcComment1 = 'assets/images/ic_comment_1.png';
   static const String imagesIcCommentCount = 'assets/images/ic_comment_count.png';
   static const String imagesIcDisLike = 'assets/images/ic_dis_like.png';
+  static const String imagesIcDisLike1 = 'assets/images/ic_dis_like_1.png';
   static const String imagesIcDrawDown = 'assets/images/ic_draw_down.png';
   static const String imagesIcDrawUp = 'assets/images/ic_draw_up.png';
   static const String imagesIcHot = 'assets/images/ic_hot.png';
   static const String imagesIcLike = 'assets/images/ic_like.png';
+  static const String imagesIcLike1 = 'assets/images/ic_like_1.png';
   static const String imagesIcPlayCount = 'assets/images/ic_play_count.png';
   static const String imagesIcRanking = 'assets/images/ic_ranking.png';
   static const String imagesIcShare = 'assets/images/ic_share.png';
+  static const String imagesIcShare1 = 'assets/images/ic_share_1.png';
   static const String imagesIcZSzrzBg1 = 'assets/images/ic_z_szrz_bg_1.png';
 
 }

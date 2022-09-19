@@ -12,6 +12,8 @@ class RankPage extends StatefulWidget {
 }
 
 class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin {
+  int totalLength=0;
+
   List<Widget> getTabs() {
     List<Widget> list = [];
     for (int region in RegionConstants.regionList) {
@@ -29,11 +31,45 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
     return list;
   }
 
+  ///做一个延时操作（解决tabBaView release模式下白屏的问题）
+  ///做一个模拟数据加载操作
+  void _getData(){
+    Future.delayed(const Duration(milliseconds: 1000)).then((value){
+      if(mounted){
+        setState(() {
+          totalLength=RegionConstants.regionList.length;
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    if(totalLength==0){
+      return Scaffold(
+        appBar: AppBar( elevation: 0,
+          toolbarHeight: 0,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: Colors.white,
+              statusBarIconBrightness: Brightness.dark),
+          backgroundColor: Colors.white,),
+        body: const Center(
+          child: CircularProgressIndicator(strokeWidth: 2,),
+        ),
+      );
+    }
+
     return DefaultTabController(
-        length: RegionConstants.regionList.length,
+        length: totalLength,
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
