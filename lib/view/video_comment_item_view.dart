@@ -18,13 +18,7 @@ class VideoCommentItemView extends StatefulWidget {
 }
 
 class _VideoCommentItemViewState extends State<VideoCommentItemView> {
-  /*Text.rich(TextSpan(children: [
-  TextSpan(text: "home:"),
-  TextSpan(
-  text: "https://flutterchina.club",
-  style: TextStyle(color: Colors.blue)),
-  WidgetSpan(child: Icon(Icons.home))
-  ]))*/
+
 
   Widget getContentView(VideoCommentEntity entity) {
     List<MemberEntity>? members = entity.content?.members;

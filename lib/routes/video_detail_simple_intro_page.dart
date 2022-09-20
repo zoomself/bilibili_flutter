@@ -2,6 +2,7 @@ import 'package:bilibili_flutter/base/utils/image_utils.dart';
 import 'package:bilibili_flutter/base/utils/string_utils.dart';
 import 'package:bilibili_flutter/generated/json/base/json_convert_content.dart';
 import 'package:bilibili_flutter/model/video_detail_entity.dart';
+import 'package:bilibili_flutter/routes/video_detail_page.dart';
 import 'package:bilibili_flutter/view/video_list_item_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -444,7 +445,11 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
           if (index == 4) {
             return getSocialView();
           }
-          return VideoListItemView(videoList: dataList[index]);
+          return InkWell(child: VideoListItemView(videoList: dataList[index]),onTap: (){
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+              return VideoDetailPage(aid: dataList[index].aid!);
+            }));
+          },);
         });
   }
 
