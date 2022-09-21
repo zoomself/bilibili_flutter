@@ -1,4 +1,5 @@
 import 'package:bilibili_flutter/base/net/net_client.dart';
+import 'package:bilibili_flutter/base/utils/fetch_video_by_android.dart';
 import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/delegate/CustomSliverPersistentHeaderDelegate.dart';
 import 'package:bilibili_flutter/model/video_detail_entity.dart';
@@ -6,6 +7,7 @@ import 'package:bilibili_flutter/routes/video_detail_comment_page.dart';
 import 'package:bilibili_flutter/routes/video_detail_simple_intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../base/utils/string_utils.dart';
 
@@ -30,6 +32,15 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
       if (mounted) {
         setState(() {
           _detailEntity = entity;
+          if(_detailEntity!=null){
+            VideoDetailView? view = _detailEntity?.view;
+            if(view!=null){
+              FetchVideoByAndroid.getVideoInfo(videoId: "${view.bvid}").then((value)  {
+                LogUtils.log("$value");
+                Fluttertoast.showToast(msg: "$value");
+              });
+            }
+          }
         });
       }
     });
