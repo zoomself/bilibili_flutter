@@ -85,7 +85,7 @@ public class BiliVideoDownload {
     }
 
     /** 下载音视频 */
-    public static void downloadFile(String saveDir, VideoInfo videoInfoBean, BilibiliListener bilibiliListener){
+    public static void downloadFile(String saveDir, VideoInfo videoInfoBean, DownloadListener downloadListener){
         // 保存音视频的位置
         try {
             File fileDir = new File(saveDir);
@@ -93,20 +93,22 @@ public class BiliVideoDownload {
                 fileDir.mkdirs();
             }
             //是否已经保存过
-            File cachedFile=new File(saveDir + File.separator + videoInfoBean.videoName + ".mp4");
+            File cachedFile=new File(saveDir + File.separator + videoInfoBean.videoId+"_"+videoInfoBean.videoName +".mp4");
+
             if(cachedFile.exists()){
                 log("--------------该视频已缓存---->"+cachedFile.getAbsolutePath());
-                bilibiliListener.onSuccess(cachedFile.getAbsolutePath());
+                downloadListener.onSuccess(cachedFile.getAbsolutePath());
                 return;
             }
 
             // 下载视频
-            File videoFile = new File(saveDir + File.separator + videoInfoBean.videoName + "_video.mp4");
+            File videoFile = new File(saveDir + File.separator + videoInfoBean.videoId+"_"+videoInfoBean.videoName + "_video.mp4");
             if (!videoFile.exists()){
                 log("--------------开始下载视频文件--------------");
                 HttpResponse videoRes = HttpRequest.get(videoInfoBean.videoBaseUrl)
                         .header("Referer", VIDEO_URL)
-                        .header("Range", "bytes=0-" + videoInfoBean.videoSize)
+                        //.header("Range", "bytes=0-" + videoInfoBean.videoSize)
+                        .header("Range", "" + videoInfoBean.videoBaseRange)
                         .header("User-Agent", USER_AGENT)
                         .execute();
                 videoRes.writeBody(videoFile);
@@ -115,26 +117,24 @@ public class BiliVideoDownload {
             }
 
             // 下载音频
-            File audioFile = new File(saveDir + File.separator + videoInfoBean.videoName + "_audio.mp4");
+            File audioFile = new File(saveDir + File.separator + videoInfoBean.videoId+"_"+videoInfoBean.videoName + "_audio.mp4");
             if (!audioFile.exists()){
                 log("--------------开始下载音频文件--------------");
 
                 HttpResponse audioRes = HttpRequest.get(videoInfoBean.audioBaseUrl)
                         .header("Referer", VIDEO_URL)
-                        .header("Range", "bytes=0-" + videoInfoBean.audioSize)
+                        //.header("Range", "bytes=0-" + videoInfoBean.audioSize)
+                        .header("Range", "" + videoInfoBean.audioBaseRange)
                         .header("User-Agent", USER_AGENT)
                         .execute();
                 audioRes.writeBody(audioFile);
                 log("--------------音频文件下载完成--------------");
 
             }
-            mergeFiles(saveDir,videoFile,audioFile,videoInfoBean,bilibiliListener);
-
-
-
+            mergeFiles(saveDir,videoFile,audioFile,videoInfoBean, downloadListener);
 
         }catch (Exception e){
-            bilibiliListener.onError(e.getMessage());
+            downloadListener.onError(e.getMessage());
             log("--------------文件下载异常"+e.getMessage()+"--------------");
 
         }
@@ -143,10 +143,10 @@ public class BiliVideoDownload {
     }
 
 
-    private static void mergeFiles(String saveDir, File videoFile, File audioFile, VideoInfo videoInfoBean, BilibiliListener bilibiliListener){
+    private static void mergeFiles(String saveDir, File videoFile, File audioFile, VideoInfo videoInfoBean, DownloadListener downloadListener){
         try {
             log("--------------开始合并音视频--------------");
-            String outFile = saveDir + File.separator + videoInfoBean.videoName + ".mp4";
+            String outFile = saveDir + File.separator +videoInfoBean.videoId+"_"+ videoInfoBean.videoName + ".mp4";
             List<String> list = new ArrayList<>();
             list.add("ffmpeg");
             list.add("-i");
@@ -169,12 +169,13 @@ public class BiliVideoDownload {
                     .subscribe(new RxFFmpegSubscriber() {
                         @Override
                         public void onFinish() {
-                            log("--------------音视频合并完成--------------");
-                            bilibiliListener.onSuccess(outFile);
                             try {
                                 videoFile.delete();
                                 audioFile.delete();
+                                downloadListener.onSuccess(outFile);
+                                log("--------------音视频合并完成--------------");
                             }catch (Exception e){
+                                log("--------------音视频合并完成后删除文件异常------>"+e.getMessage());
 
                             }
 
@@ -195,12 +196,12 @@ public class BiliVideoDownload {
                         @Override
                         public void onError(String message) {
                             log("--------------音视频合并异常-------->"+message);
-                            bilibiliListener.onError(message);
+                            downloadListener.onError(message);
                         }
                     });
 
         } catch (Exception e) {
-            bilibiliListener.onError(e.getMessage());
+            downloadListener.onError(e.getMessage());
             log("--------------音视频合并异常-------->"+e.getMessage());
 
         }

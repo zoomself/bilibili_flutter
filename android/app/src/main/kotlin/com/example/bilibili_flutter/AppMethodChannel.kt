@@ -1,9 +1,10 @@
 package com.example.bilibili_flutter
 
 import android.annotation.SuppressLint
+import android.text.TextUtils
 import android.widget.Toast
 import com.example.bilibili_flutter.helper.BiliVideoDownload
-import com.example.bilibili_flutter.helper.BilibiliListener
+import com.example.bilibili_flutter.helper.DownloadListener
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
@@ -23,15 +24,15 @@ class AppMethodChannel(flutterEngine: FlutterEngine, var activity: FlutterActivi
     @SuppressLint("CheckResult")
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         val method = call.method
-        if("getVideoInfo" == method){
+        if("downloadVideo" == method){
             val videoId=call.argument<String>("videoId").toString()
-            Toast.makeText(activity, videoId,Toast.LENGTH_SHORT).show()
             Observable.create<String> {
                 val videoInfo=BiliVideoDownload.htmlParser("$videoId/")
                 if(videoInfo!=null){
-                    val saveDir = activity.cacheDir.absolutePath + File.separator +"bilibili_videos"+ File.separator +videoInfo.videoName;
+                    videoInfo.videoId=videoId
+                    val saveDir = activity.cacheDir.absolutePath + File.separator +"bilibili_videos";
                     BiliVideoDownload.downloadFile(saveDir,videoInfo, object :
-                        BilibiliListener {
+                        DownloadListener {
                         override fun onSuccess(outFile: String?) {
                             if(outFile!=null){
                                 it.onNext(outFile)

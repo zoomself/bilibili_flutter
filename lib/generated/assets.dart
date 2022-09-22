@@ -14,6 +14,10 @@ class Assets {
   static const String imagesIcLike = 'assets/images/ic_like.png';
   static const String imagesIcLike1 = 'assets/images/ic_like_1.png';
   static const String imagesIcPlayCount = 'assets/images/ic_play_count.png';
+  static const String imagesIcPlayerFullScreen = 'assets/images/ic_player_full_screen.png';
+  static const String imagesIcPlayerPause = 'assets/images/ic_player_pause.png';
+  static const String imagesIcPlayerPlay = 'assets/images/ic_player_play.png';
+  static const String imagesIcPlayerQuitFullScreen = 'assets/images/ic_player_quit_full_screen.png';
   static const String imagesIcRanking = 'assets/images/ic_ranking.png';
   static const String imagesIcShare = 'assets/images/ic_share.png';
   static const String imagesIcShare1 = 'assets/images/ic_share_1.png';

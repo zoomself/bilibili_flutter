@@ -9,6 +9,9 @@ class StringUtils{
     int hour=duration~/3600;
     if(hour>0){
       String s_h="$hour";
+      if(hour<10){
+         s_h="0$hour";
+      }
       String s_m="00";
       String s_s="00";
       int left_m=duration-hour*3600;

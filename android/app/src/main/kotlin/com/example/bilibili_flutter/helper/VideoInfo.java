@@ -5,6 +5,7 @@ import java.io.Serializable;
 import cn.hutool.json.JSONObject;
 
 public class VideoInfo implements Serializable {  // 真实项目中不推荐直接使用`public`哦😯
+    public String videoId;
     public String videoName;
     public JSONObject videoInfo;
     public String videoBaseUrl;
