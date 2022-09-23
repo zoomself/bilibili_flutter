@@ -1,14 +1,13 @@
+import 'package:bilibili_flutter/base/utils/log_utils.dart';
+import 'package:bilibili_flutter/base/utils/screen_utils.dart';
 import 'package:bilibili_flutter/base/video/classic_video_player.dart';
 import 'package:bilibili_flutter/base/net/net_client.dart';
-import 'package:bilibili_flutter/base/utils/fetch_video_by_android.dart';
-import 'package:bilibili_flutter/base/utils/log_utils.dart';
-import 'package:bilibili_flutter/delegate/CustomSliverPersistentHeaderDelegate.dart';
+import 'package:bilibili_flutter/custom/CustomSliverPersistentHeaderDelegate.dart';
 import 'package:bilibili_flutter/model/video_detail_entity.dart';
 import 'package:bilibili_flutter/routes/video_detail_comment_page.dart';
 import 'package:bilibili_flutter/routes/video_detail_simple_intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:video_player/video_player.dart';
 
 import '../base/video/video_player_param_bean.dart';
@@ -92,6 +91,27 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
 
   ///顶部视频 appBar
   Widget getTopVideoAppbar() {
+    double getHeight(){
+      double result=200;
+      VideoDetailViewDimension? dimension = _detailEntity?.view?.dimension;
+      if(dimension!=null){
+        int? height = dimension.height;
+        int? width = dimension.width;
+        if(height!=null&&width!=null&&height!=0&&width!=0){
+          double rate=width*1.0/height;
+          result=ScreenUtils.getScreenWidth()/rate;
+          //竖屏视频
+          if(result>ScreenUtils.getScreenHeight()*2/5){
+            result=ScreenUtils.getScreenHeight()*2/5;
+          }
+
+        }
+      }
+      LogUtils.log("result: $result");
+      return result;
+
+    }
+
     return SliverAppBar(
       floating: false,
       snap: false,
@@ -106,7 +126,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
         //stretchModes: const <StretchMode>[StretchMode.zoomBackground,StretchMode.fadeTitle,StretchMode.blurBackground,],
         background: getVideoContainer(),
       ),
-      expandedHeight: 200,
+      expandedHeight: getHeight(),
     );
   }
 

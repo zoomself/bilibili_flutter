@@ -1,8 +1,11 @@
 import 'package:bilibili_flutter/base/utils/image_utils.dart';
+import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/base/utils/string_utils.dart';
 import 'package:bilibili_flutter/generated/assets.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:video_player/video_player.dart';
+import '../../custom/no_margin_slider_track_shape.dart';
 import 'video_player_param_bean.dart';
 
 class ClassicVideoPlayer extends StatefulWidget {
@@ -17,7 +20,7 @@ class ClassicVideoPlayer extends StatefulWidget {
 
 class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
   late VideoPlayerController _videoPlayerController;
-  bool showController = true; //是否显示控制层
+  bool showController = false; //是否显示控制层
 
   ///初始化视频控制器
   void _initVideoController() {
@@ -59,99 +62,18 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
 
   ///视频播放视图
   Widget getVideoView() {
-    return Container(
-      color: Colors.black,
-      child: Center(
-        child: AspectRatio(
-          aspectRatio: _videoPlayerController.value.aspectRatio,
-          child: VideoPlayer(_videoPlayerController),
-        ),
-      ),
-    );
-  }
-
-  ///视频播放控制视图
-  Widget getControllerView() {
-    ///顶部控制区域
-    Widget getTopView() {
-      return Container();
-    }
-
-    ///中部控制区域
-    Widget getMiddleView() {
-      return Container();
-    }
-
-    ///底部控制区域
-    Widget getBottomView() {
-      return Container(
-        height: 40,
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            InkWell(child: Image.asset(
-              _videoPlayerController.value.isPlaying
-                  ? Assets.imagesIcPlayerPause
-                  : Assets.imagesIcPlayerPlay,
-              width: 20,
-              height: 20,
-              color: Colors.white,
-            ),onTap: (){
-              setState(() {
-                if(_videoPlayerController.value.isPlaying){
-                  _videoPlayerController.play();
-                }else{
-                  _videoPlayerController.pause();
-                }
-              });
-            }),
-            //进度条
-            Expanded(
-                child: Slider(
-                    max: _videoPlayerController.value.duration.inMilliseconds
-                        .toDouble(),
-                    inactiveColor: const Color(0xff1a1a1a),
-                    activeColor: Colors.white,
-                    thumbColor: Colors.white,
-                    value: _videoPlayerController.value.position.inMilliseconds
-                        .toDouble(),
-                    onChanged: (v) {
-                      _videoPlayerController
-                          .seekTo(Duration(milliseconds: v.toInt()));
-                    })),
-            //时间
-            Text(
-              "${StringUtils.getFriendDuration(_videoPlayerController.value.position.inMilliseconds ~/ 1000)}/${StringUtils.getFriendDuration(_videoPlayerController.value.duration.inMilliseconds ~/ 1000)}",
-              style: const TextStyle(color: Colors.white,fontSize: 12),
-            ),
-            //全屏
-            Container(
-              margin: const EdgeInsets.only(left: 16),
-              child: Image.asset(
-                Assets.imagesIcPlayerFullScreen,
-                width: 20,
-                height: 20,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
+    LogUtils.log("aspectRatio:${_videoPlayerController.value.aspectRatio}");
+    LogUtils.log("size:${_videoPlayerController.value.size}");
     return InkWell(
-      child: SizedBox(
-        width: double.infinity,
+      child: Container(
+        color: Colors.black,
         height: double.infinity,
-        child: Visibility(
-          visible: showController,
-          child: Column(
-            children: [
-              Expanded(child: getTopView()),
-              Expanded(child: getMiddleView()),
-              getBottomView(),
-            ],
+        width: double.infinity,
+        child: Align(
+          alignment: AlignmentDirectional.bottomCenter,
+          child: AspectRatio(
+            aspectRatio: _videoPlayerController.value.aspectRatio,
+            child: VideoPlayer(_videoPlayerController),
           ),
         ),
       ),
@@ -163,9 +85,155 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
     );
   }
 
+  ///视频播放控制视图
+  Widget getControllerView() {
+    ///顶部控制区域
+    Widget getTopView() {
+      return Container(
+        height: 80,
+      );
+    }
+
+    ///中部控制区域
+    Widget getMiddleView() {
+      return Container();
+    }
+
+    ///底部控制区域
+    Widget getBottomControllerView() {
+      return Container(
+        height: 40,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+                child: Image.asset(
+                  _videoPlayerController.value.isPlaying
+                      ? Assets.imagesIcPlayerPause
+                      : Assets.imagesIcPlayerPlay,
+                  width: 24,
+                  height: 24,
+                  color: Colors.white,
+                ),
+                onTap: () {
+                  if (_videoPlayerController.value.isPlaying) {
+                    _videoPlayerController.pause();
+                  } else {
+                    _videoPlayerController.play();
+                  }
+                }),
+
+            //进度条
+            Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 8,right: 8),
+                  child: SliderTheme(
+                      data:  const SliderThemeData(
+                          trackHeight: 2,
+                          inactiveTrackColor: Color(0xff1a1a1a),
+                          activeTrackColor: Colors.white,
+                          overlayShape: RoundSliderOverlayShape(overlayRadius: 0),//去除两边的间隙
+                          //trackShape: NoMarginSliderTrackShape(addHeight: 0),//去除两边的间隙
+                          trackShape: RoundedRectSliderTrackShape(),
+                          thumbShape: RoundSliderThumbShape(
+                              enabledThumbRadius: 6.0, disabledThumbRadius: 6.0),
+                          thumbColor: Colors.white),
+                      child: Slider(
+                          max: _videoPlayerController
+                              .value.duration.inMilliseconds
+                              .toDouble(),
+                          value: _videoPlayerController
+                              .value.position.inMilliseconds
+                              .toDouble(),
+                          onChanged: (v) {
+                            _videoPlayerController
+                                .seekTo(Duration(milliseconds: v.toInt()));
+                          })),
+                )),
+
+
+            //时间
+            Text(
+              "${StringUtils.getFriendDuration(_videoPlayerController.value.position.inMilliseconds ~/ 1000)}/${StringUtils.getFriendDuration(_videoPlayerController.value.duration.inMilliseconds ~/ 1000)}",
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+            //全屏
+            Container(
+              margin: const EdgeInsets.only(left: 16),
+              child: InkWell(
+                child: Image.asset(
+                  Assets.imagesIcPlayerFullScreen,
+                  width: 24,
+                  height: 24,
+                  color: Colors.white,
+                ),
+                onTap: () {
+                  Fluttertoast.showToast(msg: "全屏");
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Visibility(
+        visible: showController,
+        child: Column(
+          children: [
+            getTopView(),
+            Expanded(child: getMiddleView()),
+            getBottomControllerView(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ///底部播放进度条
+  Widget getBottomPlayProgressView() {
+    return Visibility(
+      visible: !showController,
+      child: Align(
+        alignment: AlignmentDirectional.bottomCenter,
+        child: SizedBox(
+          height: 2,
+          child: SliderTheme(
+              data: const SliderThemeData(
+                  trackHeight: 2,
+                  inactiveTrackColor: Colors.white,
+                  activeTrackColor: Colors.pink,
+                  overlayShape: RoundSliderOverlayShape(overlayRadius: 0),//去除两边的间隙
+                  //trackShape: NoMarginSliderTrackShape(addHeight: 0),//去除两边的间隙
+                  trackShape: RoundedRectSliderTrackShape(),
+                  thumbShape: RoundSliderThumbShape(
+                      enabledThumbRadius: 0.0, disabledThumbRadius: 0.0),
+                  thumbColor: Colors.white),
+              child: Slider(
+                  max: _videoPlayerController.value.duration.inMilliseconds
+                      .toDouble(),
+                  value: _videoPlayerController.value.position.inMilliseconds
+                      .toDouble(),
+                  onChanged: (v) {
+                    _videoPlayerController
+                        .seekTo(Duration(milliseconds: v.toInt()));
+                  })),
+        ),
+      ),
+    );
+  }
+
   Widget getPlayingView() {
     return Stack(
-      children: [getVideoView(), getControllerView()],
+      children: [
+        getVideoView(),
+        getControllerView(),
+        getBottomPlayProgressView()
+      ],
     );
   }
 
