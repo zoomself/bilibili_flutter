@@ -26,8 +26,8 @@ class _MainPageState extends State<MainPage> {
       body: PageView(
         controller: _pageController,
         children: const [
-          RankPage(),
           HotPage(),
+          RankPage(),
         ],
         onPageChanged: (p) {
           setState(() {
@@ -45,6 +45,21 @@ class _MainPageState extends State<MainPage> {
             color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
         currentIndex: _currentPage,
         items: [
+
+          BottomNavigationBarItem(
+              activeIcon: Image.asset(
+                Assets.imagesIcHot,
+                color: Colors.pink,
+                width: 24,
+                height: 24,
+              ),
+              icon: Image.asset(
+                Assets.imagesIcHot,
+                color: Colors.black,
+                width: 24,
+                height: 24,
+              ),
+              label: "综合热门"),
           BottomNavigationBarItem(
               activeIcon: Image.asset(
                 Assets.imagesIcRanking,
@@ -59,20 +74,6 @@ class _MainPageState extends State<MainPage> {
                 height: 24,
               ),
               label: "排行"),
-          BottomNavigationBarItem(
-              activeIcon: Image.asset(
-                Assets.imagesIcHot,
-                color: Colors.pink,
-                width: 24,
-                height: 24,
-              ),
-              icon: Image.asset(
-                Assets.imagesIcHot,
-                color: Colors.black,
-                width: 24,
-                height: 24,
-              ),
-              label: "综合热门")
         ],
       ),
     );

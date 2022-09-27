@@ -1,2 +1,43 @@
 1:column 嵌套 listView gridView 需要设置 shrinkWrap: true,要不然显示白板
-2:
+
+2：父组件调用子组件可以使用GlobalKey，子组件调用父组件可以在父组件传入回调方法
+
+3: //下面的方式导致pageView里面的listview 滑动appbar不会联动
+      /*child: CustomScrollView(
+        slivers: [
+          getTopVideoAppbar(),
+          getTabView(),
+          const SliverFillRemaining(
+              hasScrollBody: true,
+              child: TabBarView(
+                children: [
+                  VideoDetailSimpleIntroPage(),
+                  VideoDetailSimpleIntroPage(),
+                ],
+              )),
+        ],
+      ),*/
+
+      应该采用 NestedScrollView
+      NestedScrollView(
+              body: TabBarView(
+                children: [
+                  VideoDetailSimpleIntroPage(
+                    detailEntity: _detailEntity!,
+                  ),
+                  VideoDetailCommentPage(
+                    detailEntity: _detailEntity!,
+                  ),
+                ],
+              ),
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  getTopVideoAppbar(),
+                  getTabView(),
+                ];
+              },
+            )
+
+ 4: dispose 方法调用顺序： 子组件> 父组件
+
+ 5:state with WidgetsBindingObserver 可以调用各种did方法

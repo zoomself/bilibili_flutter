@@ -1,17 +1,21 @@
+import 'dart:async';
+
 import 'package:bilibili_flutter/base/utils/image_utils.dart';
-import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/base/utils/string_utils.dart';
+import 'package:bilibili_flutter/base/video/classic_full_screen_play_page.dart';
 import 'package:bilibili_flutter/generated/assets.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:video_player/video_player.dart';
-import '../../custom/no_margin_slider_track_shape.dart';
+import '../utils/screen_utils.dart';
 import 'video_player_param_bean.dart';
 
 class ClassicVideoPlayer extends StatefulWidget {
   final VideoPlayerParamBean paramBean;
 
-  const ClassicVideoPlayer({Key? key, required this.paramBean})
+  VideoPlayerController? videoPlayerController;
+
+  ClassicVideoPlayer(
+      {Key? key, required this.paramBean, this.videoPlayerController})
       : super(key: key);
 
   @override
@@ -21,28 +25,68 @@ class ClassicVideoPlayer extends StatefulWidget {
 class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
   late VideoPlayerController _videoPlayerController;
   bool showController = false; //是否显示控制层
+  bool canFullScreen=false; //是否可以全屏
+
+
+  ///跳转全屏播放
+  void _goFullScreenPlay() {
+    if(!canFullScreen){
+      return;
+    }
+    widget.paramBean.isFullScreenPlaying = true;
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return ClassicFullScreenPlayingPage(
+          paramBean: widget.paramBean,
+          playerController: _videoPlayerController);
+    }));
+    //做一个延时处理 旋转屏幕时显得更丝滑
+    Future.delayed(const Duration(milliseconds: 200)).then((value) {
+      ScreenUtils.forceLandscape();
+    });
+
+  }
+
+  ///退出全屏播放
+  void _quitFullScreenPlay() {
+    widget.paramBean.isFullScreenPlaying = false;
+    ScreenUtils.forcePortrait();
+    Navigator.of(context).pop();
+  }
+
 
   ///初始化视频控制器
   void _initVideoController() {
-    if (widget.paramBean.url.startsWith("http")) {
-      _videoPlayerController = VideoPlayerController.network(
-          widget.paramBean.url,
-          httpHeaders: widget.paramBean.httpHeaders);
+    if (widget.videoPlayerController != null) {
+      canFullScreen=true;
+      _videoPlayerController = widget.videoPlayerController!;
     } else {
-      _videoPlayerController =
-          VideoPlayerController.asset(widget.paramBean.url);
+      canFullScreen=false;
+      if (widget.paramBean.url.startsWith("http")) {
+        _videoPlayerController = VideoPlayerController.network(
+            widget.paramBean.url,
+            httpHeaders: widget.paramBean.httpHeaders);
+      } else {
+        _videoPlayerController =
+            VideoPlayerController.asset(widget.paramBean.url);
+      }
+      _videoPlayerController.initialize().then((value) {
+        setState(() {
+        });
+      });
     }
-    _videoPlayerController.initialize().then((value) {
-      setState(() {});
-    });
+
     _videoPlayerController.addListener(() {
-      setState(() {});
+      setState(() {
+
+      });
     });
     _videoPlayerController.setLooping(widget.paramBean.looping);
     if (widget.paramBean.playAfterInit) {
       _videoPlayerController.play();
     }
   }
+
+
 
   ///空闲未初始化视图
   Widget getIdleView() {
@@ -62,15 +106,18 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
 
   ///视频播放视图
   Widget getVideoView() {
-    LogUtils.log("aspectRatio:${_videoPlayerController.value.aspectRatio}");
-    LogUtils.log("size:${_videoPlayerController.value.size}");
+    /*LogUtils.log("aspectRatio:${_videoPlayerController.value.aspectRatio}");
+    LogUtils.log("size:${_videoPlayerController.value.size}");*/
     return InkWell(
       child: Container(
         color: Colors.black,
         height: double.infinity,
         width: double.infinity,
         child: Align(
-          alignment: AlignmentDirectional.bottomCenter,
+          alignment: widget.paramBean.isFullScreenPlaying
+              ? AlignmentDirectional.center
+              : AlignmentDirectional.bottomCenter,
+          //竖屏时 由于使用SliverAppBar 时哪怕是计算出和视频一样的比例高度，还是不能填满控件
           child: AspectRatio(
             aspectRatio: _videoPlayerController.value.aspectRatio,
             child: VideoPlayer(_videoPlayerController),
@@ -80,6 +127,12 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
       onTap: () {
         setState(() {
           showController = !showController;
+          if(showController){
+            Future.delayed(const Duration(seconds: 2)).then((value){
+              showController=false;
+            });
+
+          }
         });
       },
     );
@@ -127,31 +180,30 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
             //进度条
             Expanded(
                 child: Container(
-                  margin: const EdgeInsets.only(left: 8,right: 8),
-                  child: SliderTheme(
-                      data:  const SliderThemeData(
-                          trackHeight: 2,
-                          inactiveTrackColor: Color(0xff1a1a1a),
-                          activeTrackColor: Colors.white,
-                          overlayShape: RoundSliderOverlayShape(overlayRadius: 0),//去除两边的间隙
-                          //trackShape: NoMarginSliderTrackShape(addHeight: 0),//去除两边的间隙
-                          trackShape: RoundedRectSliderTrackShape(),
-                          thumbShape: RoundSliderThumbShape(
-                              enabledThumbRadius: 6.0, disabledThumbRadius: 6.0),
-                          thumbColor: Colors.white),
-                      child: Slider(
-                          max: _videoPlayerController
-                              .value.duration.inMilliseconds
-                              .toDouble(),
-                          value: _videoPlayerController
-                              .value.position.inMilliseconds
-                              .toDouble(),
-                          onChanged: (v) {
-                            _videoPlayerController
-                                .seekTo(Duration(milliseconds: v.toInt()));
-                          })),
-                )),
-
+              margin: const EdgeInsets.only(left: 8, right: 8),
+              child: SliderTheme(
+                  data: const SliderThemeData(
+                      trackHeight: 2,
+                      inactiveTrackColor: Color(0xff1a1a1a),
+                      activeTrackColor: Colors.white,
+                      overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
+                      //去除两边的间隙
+                      //trackShape: NoMarginSliderTrackShape(addHeight: 0),//去除两边的间隙
+                      trackShape: RoundedRectSliderTrackShape(),
+                      thumbShape: RoundSliderThumbShape(
+                          enabledThumbRadius: 6.0, disabledThumbRadius: 6.0),
+                      thumbColor: Colors.white),
+                  child: Slider(
+                      max: _videoPlayerController.value.duration.inMilliseconds
+                          .toDouble(),
+                      value: _videoPlayerController
+                          .value.position.inMilliseconds
+                          .toDouble(),
+                      onChanged: (v) {
+                        _videoPlayerController
+                            .seekTo(Duration(milliseconds: v.toInt()));
+                      })),
+            )),
 
             //时间
             Text(
@@ -159,20 +211,26 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
               style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
             //全屏
-            Container(
+            Visibility(visible: canFullScreen,child: Container(
               margin: const EdgeInsets.only(left: 16),
               child: InkWell(
                 child: Image.asset(
-                  Assets.imagesIcPlayerFullScreen,
+                  widget.paramBean.isFullScreenPlaying
+                      ? Assets.imagesIcPlayerQuitFullScreen
+                      : Assets.imagesIcPlayerFullScreen,
                   width: 24,
                   height: 24,
                   color: Colors.white,
                 ),
                 onTap: () {
-                  Fluttertoast.showToast(msg: "全屏");
+                  if (!widget.paramBean.isFullScreenPlaying) {
+                    _goFullScreenPlay();
+                  } else {
+                    _quitFullScreenPlay();
+                  }
                 },
               ),
-            ),
+            ),),
           ],
         ),
       );
@@ -207,7 +265,8 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
                   trackHeight: 2,
                   inactiveTrackColor: Colors.white,
                   activeTrackColor: Colors.pink,
-                  overlayShape: RoundSliderOverlayShape(overlayRadius: 0),//去除两边的间隙
+                  overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
+                  //去除两边的间隙
                   //trackShape: NoMarginSliderTrackShape(addHeight: 0),//去除两边的间隙
                   trackShape: RoundedRectSliderTrackShape(),
                   thumbShape: RoundSliderThumbShape(
@@ -255,7 +314,9 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
+    if(!canFullScreen){
+      _videoPlayerController.dispose();
+    }
     super.dispose();
   }
 
