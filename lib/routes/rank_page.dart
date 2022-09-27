@@ -34,7 +34,7 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
   ///做一个延时操作（解决tabBaView release模式下白屏的问题）
   ///做一个模拟数据加载操作
   void _getData(){
-    Future.delayed(const Duration(milliseconds: 1000)).then((value){
+    Future.delayed(const Duration(milliseconds: 100)).then((value){
       if(mounted){
         setState(() {
           totalLength=RegionConstants.regionList.length;

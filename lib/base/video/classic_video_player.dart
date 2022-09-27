@@ -34,15 +34,12 @@ class _ClassicVideoPlayerState extends State<ClassicVideoPlayer> {
       return;
     }
     widget.paramBean.isFullScreenPlaying = true;
+    ScreenUtils.forceLandscape();
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return ClassicFullScreenPlayingPage(
           paramBean: widget.paramBean,
           playerController: _videoPlayerController);
     }));
-    //做一个延时处理 旋转屏幕时显得更丝滑
-    Future.delayed(const Duration(milliseconds: 200)).then((value) {
-      ScreenUtils.forceLandscape();
-    });
 
   }
 

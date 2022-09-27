@@ -22,11 +22,7 @@ class ClassicFullScreenPlayingPage extends StatefulWidget {
 class _ClassicFullScreenPlayingPageState
     extends State<ClassicFullScreenPlayingPage> {
 
-  @override
-  void dispose() {
-    widget.paramBean.isFullScreenPlaying=false;
-    super.dispose();
-  }
+
 
 
   @override
