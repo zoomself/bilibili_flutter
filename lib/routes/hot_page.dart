@@ -1,10 +1,10 @@
 import 'package:bilibili_flutter/base/net/net_client.dart';
-import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/routes/video_detail_page.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../base/utils/log_utils.dart';
 import '../model/video_entity.dart';
 import '../view/video_list_item_page.dart';
 
@@ -125,6 +125,8 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    LogUtils.log("build hotPage");
+
     return Scaffold(
       appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
@@ -134,6 +136,7 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
         toolbarHeight: 0,
       ),
       body:EasyRefresh(
+        controller: _refreshController,
         onLoad: _loadMore,
         onRefresh: _refresh,
         child: getBody(),
