@@ -1,9 +1,12 @@
 import 'package:bilibili_flutter/generated/assets.dart';
-import 'package:bilibili_flutter/routes/hot_page.dart';
+import 'package:bilibili_flutter/routes_advance/hot_page/hot.dart';
+//import 'package:bilibili_flutter/routes/hot_page.dart';
+import 'package:bilibili_flutter/routes_advance/hot_page/hot_page_view.dart';
+
 import 'package:bilibili_flutter/routes/rank_page.dart';
 import 'package:flutter/material.dart';
 
-//import 'bloc/hot/hot_view.dart';
+
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -28,7 +31,8 @@ class _MainPageState extends State<MainPage> {
       body: PageView(
         controller: _pageController,
         children:  [
-          HotPage(),
+          // HotPage(),
+          HotView(),
           const RankPage(),
         ],
         onPageChanged: (p) {

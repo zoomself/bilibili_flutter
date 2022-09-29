@@ -125,8 +125,7 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    LogUtils.log("build hotPage");
-
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
