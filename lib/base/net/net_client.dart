@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../generated/json/base/json_convert_content.dart';
@@ -58,7 +61,6 @@ class NetClient {
       ValueChanged<T>? onSuccess,
       VoidCallback? onComplete,
       ValueChanged<Exception>? onError}) {
-
     RequestOptions requestOptions = RequestOptions(
         path: url, method: "post", data: data, headers: headers, extra: extra);
 
@@ -87,42 +89,42 @@ class NetClient {
         var data = response.data;
         if (data != null) {
           var extra = requestOptions.extra;
-          var apiResultDataList=extra["api_result_data"];
-          var apiResultCode=extra["api_result_code"];
-          var apiResultMsg=extra["api_result_msg"];
-          var apiResultCodeOkState=extra["api_result_code_ok_state"];
+          var apiResultDataList = extra["api_result_data"];
+          var apiResultCode = extra["api_result_code"];
+          var apiResultMsg = extra["api_result_msg"];
+          var apiResultCodeOkState = extra["api_result_code_ok_state"];
 
           //解析 code字段
-          dynamic  respCode;
-          for(String s in apiResultCode){
-            respCode=data[s];
-            if(respCode!=null){
+          dynamic respCode;
+          for (String s in apiResultCode) {
+            respCode = data[s];
+            if (respCode != null) {
               break;
             }
           }
           //解析 msg字段
-          dynamic  respMsg;
-          for(String s in apiResultMsg){
-            respMsg=data[s];
-            if(respMsg!=null){
+          dynamic respMsg;
+          for (String s in apiResultMsg) {
+            respMsg = data[s];
+            if (respMsg != null) {
               break;
             }
           }
 
           //解析 data字段
-          dynamic  responseData;
-          for(String s in apiResultDataList){
-            responseData=data[s];
-            if(responseData!=null){
+          dynamic responseData;
+          for (String s in apiResultDataList) {
+            responseData = data[s];
+            if (responseData != null) {
               break;
             }
           }
 
           //解析返回成功状态码
-          bool isOk=false;
-          for(String s in apiResultCodeOkState){
-            if(respCode.toString()==s){
-              isOk=true;
+          bool isOk = false;
+          for (String s in apiResultCodeOkState) {
+            if (respCode.toString() == s) {
+              isOk = true;
               break;
             }
           }
@@ -143,7 +145,6 @@ class NetClient {
               }
             }
           }
-
         } else {
           throw ApiResultException("response data is null");
         }
@@ -161,5 +162,27 @@ class NetClient {
         _defaultInterceptor.onError(dioError, ErrorInterceptorHandler());
       }
     }
+  }
+
+  void download(
+    String url,
+    savedPath, {
+    ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    bool deleteOnError = true,
+    String lengthHeader = Headers.contentLengthHeader,
+    data,
+    Options? options,
+  }) async{
+    Response response = await _dio.download(url, savedPath,
+        onReceiveProgress: onReceiveProgress,
+        queryParameters: queryParameters,
+        cancelToken: cancelToken,
+        deleteOnError: deleteOnError,
+        lengthHeader: lengthHeader,
+        data: data,
+        options: options);
+
   }
 }

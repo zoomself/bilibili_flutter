@@ -77,10 +77,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>  with WidgetsBindingO
           paramBean?.looping = true;
           paramBean?.playAfterInit = true;
           paramBean?.isFullScreenPlaying = false;
-          paramBean?.httpHeaders = {
-            "Referer": "https://www.bilibili.com/",
-            "User-Agent": Constants.USER_AGENT,
-          };
+          paramBean?.httpHeaders = Constants.bilibliHeader;
           _initVideoController(paramBean!);
         });
       }

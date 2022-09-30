@@ -15,8 +15,8 @@ class DefaultInterceptor extends Interceptor {
     var extra={
       "api_result_data":["data"],
       "api_result_code":["code"],
-      "api_result_msg":["message"],
-      "api_result_code_ok_state":["0"],
+      "api_result_msg":["message","msg"],
+      "api_result_code_ok_state":["0","1"],
     };
     options.extra.addAll(extra);
 

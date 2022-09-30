@@ -1,5 +1,10 @@
 package com.example.bilibili_flutter.helper;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 
@@ -207,4 +212,64 @@ public class BiliVideoDownload {
         }
 
     }
+
+
+    /**
+     * 直接下载mp4视频
+     * @param mp4Url
+     * @param saveDir
+     * @param downloadListener
+     */
+    public static void downloadMp4Direct(Context context,String mp4Url, String videoId, String videoName, String saveDir, DownloadListener downloadListener){
+        // 保存音视频的位置
+        try {
+            File fileDir = new File(saveDir);
+            if (!fileDir.exists()){
+                fileDir.mkdirs();
+            }
+            //是否已经保存过
+            File cachedFile=new File(saveDir + File.separator + videoId+"_"+videoName +".mp4");
+
+            if(cachedFile.exists()){
+                log("--------------该视频已缓存---->"+cachedFile.getAbsolutePath());
+                downloadListener.onSuccess(cachedFile.getAbsolutePath());
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Video.Media.DATA, cachedFile.getPath());
+                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                return;
+            }else {
+                // 下载视频
+                log("--------------开始下载视频文件-------------->"+cachedFile.getAbsolutePath());
+                HttpResponse videoRes = HttpRequest.get(mp4Url)
+                        .header("Referer", VIDEO_URL)
+                        .header("User-Agent", USER_AGENT)
+                        .execute();
+                videoRes.writeBody(cachedFile);
+                downloadListener.onSuccess(cachedFile.getAbsolutePath());
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Video.Media.DATA, cachedFile.getPath());
+                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                log("--------------视频文件下载完成--------------");
+            }
+
+
+
+
+
+        }catch (Exception e){
+            downloadListener.onError(e.getMessage());
+            log("--------------文件下载异常"+e.getMessage()+"--------------");
+
+        }
+    }
+
+
+
+
 }

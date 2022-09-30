@@ -1,12 +1,23 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bilibili_flutter/base/net/net_client.dart';
 import 'package:bilibili_flutter/base/utils/image_utils.dart';
+import 'package:bilibili_flutter/base/utils/log_utils.dart';
 import 'package:bilibili_flutter/base/utils/string_utils.dart';
+import 'package:bilibili_flutter/common/constants.dart';
 import 'package:bilibili_flutter/generated/json/base/json_convert_content.dart';
+import 'package:bilibili_flutter/model/download_video_info_entity.dart';
 import 'package:bilibili_flutter/model/video_detail_entity.dart';
 import 'package:bilibili_flutter/routes/video_detail_page.dart';
 import 'package:bilibili_flutter/view/video_list_item_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path_provider_android/path_provider_android.dart';
 
+import '../base/utils/fetch_video_by_android.dart';
 import '../generated/assets.dart';
 import '../model/video_entity.dart';
 
@@ -212,6 +223,7 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
     if (tags == null) {
       return Container();
     }
+
     ///视频标签
     List<Widget> getTagList() {
       List<Widget> list = [];
@@ -236,7 +248,7 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
     ///视频简介des
     Widget getDesView() {
       String? desc = widget.detailEntity.view?.desc;
-      if(desc==null){
+      if (desc == null) {
         return Container();
       }
       return Container(
@@ -350,27 +362,92 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
             ],
           )),
           Expanded(
-              child: Column(
-            children: [
-              Image.asset(
-                Assets.imagesIcShare,
-                width: 20,
-                height: 20,
-                color: Colors.grey[700],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  StringUtils.getFriendNum(
-                      widget.detailEntity.view?.stat?.share),
-                  style: getUserInfoStyle(),
+              child: InkWell(
+            child: Column(
+              children: [
+                Image.asset(
+                  Assets.imagesIcShare,
+                  width: 20,
+                  height: 20,
+                  color: Colors.grey[700],
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    StringUtils.getFriendNum(
+                        widget.detailEntity.view?.stat?.share),
+                    style: getUserInfoStyle(),
+                  ),
+                )
+              ],
+            ),
+            onTap: () {
+              //下载高清无水印视频
+              String shortUrl =
+                  "https://b23.tv/${widget.detailEntity.view?.bvid}"; //视频短链接
+              List<int> list = utf8.encode(shortUrl);
+              String encodeUrl = base64Encode(list);
+              String fetchUrl =
+                  "https://www.mxnzp.com/api/bilibili/video?url=$encodeUrl&app_id=ohnvf8eponbjhjwv&app_secret=K0pUajE3a2w3MnlXanFhNU5nREpNdz09";
+              NetClient().get<DownloadVideoInfoEntity>(fetchUrl,
+                  onSuccess: (entity) {
+                List<DownloadVideoInfoList>? el = entity.list;
+                if (el != null && el.isNotEmpty) {
+                  DownloadVideoInfoList info = el[0];
+                  String mp4Url = "${info.url}";
+
+                  //通过android下载
+                  FetchVideoByAndroid.downloadVideoDirect(
+                    mp4Url: mp4Url,
+                    videoId: "${widget.detailEntity.view?.bvid}",
+                    videoName: "${widget.detailEntity.view?.title}",
+                  ).then((value) {
+                    LogUtils.log("$value");
+                    Fluttertoast.showToast(msg: "$value");
+                  });
+
+
+                  //通过dart下载
+                  /*getExternalStorageDirectories(type: StorageDirectory.dcim)
+                      .then((value) {
+                    String savedPath =
+                        "${value![0].absolute.path}/bilibili/${entity.title}_bilibili.mp4";
+
+                    NetClient().download(mp4Url, savedPath,
+                        onReceiveProgress: (p, t) {
+                      LogUtils.log("视频下载进度: ($p/$t) ");
+                      if (p == t) {
+                        Fluttertoast.showToast(msg: "下载完成");
+                      }
+                    },
+                        options: Options(
+                            headers: Constants.bilibliHeader,
+                            receiveTimeout: 300 * 1000,
+                            sendTimeout: 300 * 1000));
+                  });*/
+
+
+                } else {
+                  Fluttertoast.showToast(msg: "获取无水印视频信息失败");
+                }
+              });
+            },
           )),
         ],
       ),
     );
+  }
+
+  ///下载缓存
+  void _downloadVideoDirect(String mp4Url, String videoId, String videoName) {
+    FetchVideoByAndroid.downloadVideoDirect(
+      mp4Url: mp4Url,
+      videoId: videoId,
+      videoName: videoName,
+    ).then((value) {
+      LogUtils.log("$value");
+      Fluttertoast.showToast(msg: "$value");
+    });
   }
 
   List<VideoList> getDataList() {
@@ -394,14 +471,13 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
     return dataList;
   }
 
-
   Widget getBody() {
     var dataList = getDataList();
-    if(dataList.length==5){
+    if (dataList.length == 5) {
       return ListView.builder(
           padding: const EdgeInsets.only(top: 0),
           //这种column 嵌套listview 顶部会有空白区域
-          itemCount: dataList.length+1,
+          itemCount: dataList.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
               return getUserInfoView();
@@ -418,7 +494,12 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
             if (index == 4) {
               return getSocialView();
             }
-            return const SizedBox(height: 150,child: Center(child: Text("暂无相关推荐视频"),),);
+            return const SizedBox(
+              height: 150,
+              child: Center(
+                child: Text("暂无相关推荐视频"),
+              ),
+            );
           });
     }
 
@@ -445,11 +526,15 @@ class _VideoDetailSimpleIntroPageState extends State<VideoDetailSimpleIntroPage>
           if (index == 4) {
             return getSocialView();
           }
-          return InkWell(child: VideoListItemView(videoList: dataList[index]),onTap: (){
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-              return VideoDetailPage(aid: dataList[index].aid!);
-            }));
-          },);
+          return InkWell(
+            child: VideoListItemView(videoList: dataList[index]),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                return VideoDetailPage(aid: dataList[index].aid!);
+              }));
+            },
+          );
         });
   }
 
